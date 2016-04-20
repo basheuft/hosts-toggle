@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var hostsFile string = "/etc/hosts"
+const hostsFile = "/etc/hosts"
 
 func main() {
 
@@ -46,31 +46,39 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var uncommentedLines []string = []string{}
-	var commentedLines []string = []string{}
+	uncommentedLines := []string{}
+	commentedLines := []string{}
 
 	// Update
 	for i := startLineIndex + 1; i < endLineIndex; i++ {
-		var line *string = &lines[i]
-		if strings.HasPrefix(*line, "#") {
+		line := lines[i]
+
+		if strings.HasPrefix(line, "#") {
 			// Remove comment
-			*line = strings.TrimLeft(*line, "#")
-			uncommentedLines = append(uncommentedLines, *line)
+			line = strings.TrimLeft(line, "#")
+			uncommentedLines = append(uncommentedLines, line)
 		} else {
 			// Add comment
-			*line = "#" + *line
-			commentedLines = append(commentedLines, *line)
+			line = "#" + line
+			commentedLines = append(commentedLines, line)
 		}
+
+		lines[i] = line
 	}
 
 	// Lines to string
-	var newContent string = ""
+	var newContent string
 	for i := 0; i < len(lines); i++ {
 		newContent += lines[i] + "\n"
 	}
 
 	// Write
-	ioutil.WriteFile(hostsFile, []byte(newContent), 0644)
+	err = ioutil.WriteFile(hostsFile, []byte(newContent), 0644)
+
+	if err != nil {
+		log.Println("Error writing hosts file...")
+		return
+	}
 
 	// Summary
 	fmt.Printf("Toggling %s..\n", project)
