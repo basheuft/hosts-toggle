@@ -1,14 +1,14 @@
 package main
 
 import (
-	"os"
-	"fmt"
-	"flag"
-	"strings"
-	"io/ioutil"
 	"errors"
-	"regexp"
+	"flag"
+	"fmt"
+	"io/ioutil"
 	"log"
+	"os"
+	"regexp"
+	"strings"
 )
 
 var hostsFile string = "/etc/hosts"
@@ -29,7 +29,7 @@ func main() {
 	}
 
 	// Check for sudo
-	if (!isSuperUser()) {
+	if !isSuperUser() {
 		log.Fatal("You have to run this program as super-user!")
 	}
 
@@ -48,7 +48,7 @@ func main() {
 
 	var uncommentedLines []string = []string{}
 	var commentedLines []string = []string{}
-	
+
 	// Update
 	for i := startLineIndex + 1; i < endLineIndex; i++ {
 		var line *string = &lines[i]
