@@ -1,4 +1,4 @@
-Hosts-file markup:
+# Hosts-file example markup:
 
 <pre>
 \# TOGGLE example-project
