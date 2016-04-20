@@ -68,8 +68,13 @@ func main() {
 
 	// Lines to string
 	var newContent string
+	lineCount := len(lines)
+
 	for i := 0; i < len(lines); i++ {
-		newContent += lines[i] + "\n"
+		newContent += lines[i]
+		if i < lineCount-1 {
+			newContent += "\n"
+		}
 	}
 
 	// Write

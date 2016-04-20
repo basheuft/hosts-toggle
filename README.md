@@ -3,7 +3,7 @@
 `hosts-toggle` allows you to easily enable or disable certain rules in your hosts file
 
 # Installation
-`go get github.com/101Bas/hosts-toggle`.
+`go get github.com/101Bas/hosts-toggle`
 
 # Usage
 
