@@ -83,17 +83,15 @@ func main() {
 	// Summary
 	fmt.Printf("Toggling %s..\n", project)
 
-	if len(uncommentedLines) > 0 {
-		fmt.Println("\033[0;32mUncommented the following lines:\033[0m")
-		for i := 0; i < len(uncommentedLines); i++ {
-			fmt.Printf("\t%s\n", uncommentedLines[i])
-		}
-	}
+	displayChanges(uncommentedLines, "\033[0;32mUncommented the following lines:\033[0m")
+	displayChanges(commentedLines, "\033[0;31mCommented the following lines:\033[0m")
+}
 
-	if len(commentedLines) > 0 {
-		fmt.Println("\033[0;31mCommented the following lines:\033[0m")
-		for i := 0; i < len(commentedLines); i++ {
-			fmt.Printf("\t%s\n", commentedLines[i])
+func displayChanges(lines []string, message string) {
+	if len(lines) > 0 {
+		fmt.Println(message)
+		for i := 0; i < len(lines); i++ {
+			fmt.Printf("\t%s\n", lines[i])
 		}
 	}
 }
