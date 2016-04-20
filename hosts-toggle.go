@@ -1,17 +1,17 @@
 package main
 
 import (
-	"os"
-	"fmt"
-	"flag"
-	"strings"
-	"io/ioutil"
 	"errors"
-	"regexp"
+	"flag"
+	"fmt"
+	"io/ioutil"
 	"log"
+	"os"
+	"regexp"
+	"strings"
 )
 
-var hostsFile string = "/etc/hosts"
+const hostsFile = "/etc/hosts"
 
 func main() {
 
@@ -29,7 +29,7 @@ func main() {
 	}
 
 	// Check for sudo
-	if (!isSuperUser()) {
+	if !isSuperUser() {
 		log.Fatal("You have to run this program as super-user!")
 	}
 
@@ -46,46 +46,52 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var uncommentedLines []string = []string{}
-	var commentedLines []string = []string{}
-	
+	uncommentedLines := []string{}
+	commentedLines := []string{}
+
 	// Update
 	for i := startLineIndex + 1; i < endLineIndex; i++ {
-		var line *string = &lines[i]
-		if strings.HasPrefix(*line, "#") {
+		line := lines[i]
+
+		if strings.HasPrefix(line, "#") {
 			// Remove comment
-			*line = strings.TrimLeft(*line, "#")
-			uncommentedLines = append(uncommentedLines, *line)
+			line = strings.TrimLeft(line, "#")
+			uncommentedLines = append(uncommentedLines, line)
 		} else {
 			// Add comment
-			*line = "#" + *line
-			commentedLines = append(commentedLines, *line)
+			line = "#" + line
+			commentedLines = append(commentedLines, line)
 		}
+
+		lines[i] = line
 	}
 
 	// Lines to string
-	var newContent string = ""
+	var newContent string
 	for i := 0; i < len(lines); i++ {
 		newContent += lines[i] + "\n"
 	}
 
 	// Write
-	ioutil.WriteFile(hostsFile, []byte(newContent), 0644)
+	err = ioutil.WriteFile(hostsFile, []byte(newContent), 0644)
+
+	if err != nil {
+		log.Println("Error writing hosts file...")
+		return
+	}
 
 	// Summary
 	fmt.Printf("Toggling %s..\n", project)
 
-	if len(uncommentedLines) > 0 {
-		fmt.Println("\033[0;32mUncommented the following lines:\033[0m")
-		for i := 0; i < len(uncommentedLines); i++ {
-			fmt.Printf("\t%s\n", uncommentedLines[i])
-		}
-	}
+	displayChanges(uncommentedLines, "\033[0;32mUncommented the following lines:\033[0m")
+	displayChanges(commentedLines, "\033[0;31mCommented the following lines:\033[0m")
+}
 
-	if len(commentedLines) > 0 {
-		fmt.Println("\033[0;31mCommented the following lines:\033[0m")
-		for i := 0; i < len(commentedLines); i++ {
-			fmt.Printf("\t%s\n", commentedLines[i])
+func displayChanges(lines []string, message string) {
+	if len(lines) > 0 {
+		fmt.Println(message)
+		for i := 0; i < len(lines); i++ {
+			fmt.Printf("\t%s\n", lines[i])
 		}
 	}
 }
