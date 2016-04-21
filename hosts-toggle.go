@@ -145,9 +145,6 @@ func getProjectEndLine(hosts []string, startLine int) (int, error) {
 	var projectEndRegex = regexp.MustCompile("^#[ ]?END[ ]?TOGGLE$")
 
 	for i := startLine; i < len(hosts); i++ {
-		//if matched, _ := regexp.MatchString("(?i)# END TOGGLE", hosts[i]); matched {
-		//	return i, nil
-		//}
 		if projectEndRegex.MatchString(hosts[i]) {
 			return i, nil
 		}
