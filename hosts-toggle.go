@@ -119,8 +119,10 @@ func getHostsFileLines() []string {
 }
 
 func getProjectStartLine(hosts []string, project string) (int, error) {
+	var projectStartRegex = regexp.MustCompile(fmt.Sprintf("^#[ ]?TOGGLE[ ]+%s$", project))
+
 	for i := 0; i < len(hosts); i++ {
-		if matched, _ := regexp.MatchString(fmt.Sprintf("(?i)# TOGGLE %s", project), hosts[i]); matched {
+		if projectStartRegex.MatchString(hosts[i]) {
 			return i, nil
 		}
 	}
@@ -129,8 +131,13 @@ func getProjectStartLine(hosts []string, project string) (int, error) {
 }
 
 func getProjectEndLine(hosts []string, startLine int) (int, error) {
+	var projectEndRegex = regexp.MustCompile("^#[ ]?END[ ]?TOGGLE$")
+
 	for i := startLine; i < len(hosts); i++ {
-		if matched, _ := regexp.MatchString("(?i)# END TOGGLE", hosts[i]); matched {
+		//if matched, _ := regexp.MatchString("(?i)# END TOGGLE", hosts[i]); matched {
+		//	return i, nil
+		//}
+		if projectEndRegex.MatchString(hosts[i]) {
 			return i, nil
 		}
 	}
