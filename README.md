@@ -18,7 +18,7 @@
 ## Command
 
 ```
-sudo hosts-file -p="example-project"
+sudo hosts-toggle -p="example-project"
 ```
 
 ## Result
